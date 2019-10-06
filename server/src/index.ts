@@ -1,6 +1,10 @@
+require('dotenv').config();
 import express from 'express';
 
+const { PORT } = process.env;
 
 const app = express();
+
 app.get('/', (req, res) => res.send('hello'));
-app.listen(3000, () => console.log('wxsy listening on port 3000!'));
+
+app.listen(PORT, () => console.log(`wxsy listening on port: ${PORT}!`));
