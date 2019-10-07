@@ -5,4 +5,4 @@ var SubscriptionSchema = new mongoose_1.Schema({
     streamerId: String,
     gameId: String,
 });
-exports.SubscriptionModel = mongoose_1.model('Subscription', SubscriptionSchema);
+exports.Subscription = mongoose_1.model('Subscription', SubscriptionSchema);
