@@ -1,4 +1,5 @@
 require('dotenv').config();
+require('./database');
 import express from 'express';
 
 const { PORT } = process.env;
