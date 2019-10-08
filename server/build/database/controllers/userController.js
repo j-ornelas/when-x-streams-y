@@ -41,12 +41,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
 var body_parser_1 = __importDefault(require("body-parser"));
+var node_fetch_1 = __importDefault(require("node-fetch"));
 var UserModel_1 = require("../models/UserModel");
+var SubscriptionModel_1 = require("../models/SubscriptionModel");
 var router = express_1.Router();
 router.use(body_parser_1.default.json());
 router.use(body_parser_1.default.urlencoded({
     extended: true
 }));
+var TWITCH_CLIENT_ID = process.env.TWITCH_CLIENT_ID;
 router.get('/get', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var users, err_1;
     return __generator(this, function (_a) {
@@ -67,22 +70,81 @@ router.get('/get', function (req, res) { return __awaiter(void 0, void 0, void 0
     });
 }); });
 router.post('/add-subscription', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, userId, subscriptionId, user, err_2;
+    var _a, userId, streamName, gameName, twitchStreamerRequest, streamerData, streamerId, twitchGameRequest, gameData, gameId, previousSubscription, subscriptionId, newSubscription, user, err_2;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                _b.trys.push([0, 2, , 3]);
-                _a = req.body, userId = _a.userId, subscriptionId = _a.subscriptionId;
-                return [4 /*yield*/, UserModel_1.User.updateOne({ _id: userId }, { $push: { subscriptions: subscriptionId } })];
+                _b.trys.push([0, 11, , 12]);
+                _a = req.body, userId = _a.userId, streamName = _a.streamName, gameName = _a.gameName;
+                return [4 /*yield*/, node_fetch_1.default("https://api.twitch.tv/helix/users?login=" + streamName, {
+                        headers: {
+                            "Client-ID": TWITCH_CLIENT_ID || ''
+                        }
+                    })];
             case 1:
+                twitchStreamerRequest = _b.sent();
+                return [4 /*yield*/, twitchStreamerRequest.json()];
+            case 2:
+                streamerData = _b.sent();
+                if (!streamerData || !streamerData.data || !streamerData.data.length)
+                    return [2 /*return*/, res.send({ message: "We couldn't find a streamer with the name " + streamName })];
+                streamerId = streamerData.data[0].id;
+                return [4 /*yield*/, node_fetch_1.default("https://api.twitch.tv/helix/games?name=" + gameName, {
+                        headers: {
+                            "Client-ID": TWITCH_CLIENT_ID || ''
+                        }
+                    })];
+            case 3:
+                twitchGameRequest = _b.sent();
+                return [4 /*yield*/, twitchGameRequest.json()];
+            case 4:
+                gameData = _b.sent();
+                if (!gameData || !gameData.data || !gameData.data.length)
+                    return [2 /*return*/, res.send({ message: "We couldn't find a game with the name " + gameName })];
+                gameId = gameData.data[0].id;
+                return [4 /*yield*/, SubscriptionModel_1.Subscription.findOne({
+                        streamerId: streamerId,
+                        gameId: gameId,
+                    })];
+            case 5:
+                previousSubscription = _b.sent();
+                subscriptionId = void 0;
+                if (!!previousSubscription) return [3 /*break*/, 8];
+                // create subscription;
+                console.log('CREATING NEW SUB');
+                return [4 /*yield*/, new SubscriptionModel_1.Subscription({
+                        streamerId: streamerId,
+                        gameId: gameId,
+                        streamName: streamName,
+                        gameName: gameName
+                    }).save()];
+            case 6:
+                _b.sent();
+                return [4 /*yield*/, SubscriptionModel_1.Subscription.findOne({
+                        streamerId: streamerId,
+                        gameId: gameId,
+                    })];
+            case 7:
+                newSubscription = _b.sent();
+                subscriptionId = (newSubscription && newSubscription._id);
+                return [3 /*break*/, 9];
+            case 8:
+                console.log('FOUND SUB IN DB');
+                subscriptionId = previousSubscription._id;
+                _b.label = 9;
+            case 9:
+                if (!subscriptionId)
+                    return [2 /*return*/, res.send({ message: 'something went wrong' })];
+                return [4 /*yield*/, UserModel_1.User.updateOne({ _id: userId }, { $push: { subscriptions: subscriptionId } })];
+            case 10:
                 user = _b.sent();
                 res.send({ user: user, success: true });
-                return [3 /*break*/, 3];
-            case 2:
+                return [3 /*break*/, 12];
+            case 11:
                 err_2 = _b.sent();
                 res.send({ message: "unable to update user. info: " + err_2.toString() });
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                return [3 /*break*/, 12];
+            case 12: return [2 /*return*/];
         }
     });
 }); });

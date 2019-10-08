@@ -41,34 +41,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var nodemailer_1 = __importDefault(require("nodemailer"));
 var _a = process.env, EMAIL_ADDRESS = _a.EMAIL_ADDRESS, EMAIL_PASSWORD = _a.EMAIL_PASSWORD;
-var emailUser = function (user) { return new Promise(function (resolve, reject) { return __awaiter(void 0, void 0, void 0, function () {
-    var transporter, mailOptions;
-    return __generator(this, function (_a) {
-        console.log('email stuff', EMAIL_ADDRESS, EMAIL_PASSWORD);
-        transporter = nodemailer_1.default.createTransport({
-            service: 'gmail',
-            auth: {
-                user: EMAIL_ADDRESS,
-                pass: EMAIL_PASSWORD
-            }
+var emailUser = function (user, _a) {
+    var streamName = _a.streamName, gameName = _a.gameName;
+    return new Promise(function (resolve, reject) { return __awaiter(void 0, void 0, void 0, function () {
+        var transporter, mailOptions;
+        return __generator(this, function (_a) {
+            transporter = nodemailer_1.default.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: EMAIL_ADDRESS,
+                    pass: EMAIL_PASSWORD
+                }
+            });
+            mailOptions = {
+                from: 'WXSY - no-reply',
+                // to: 'bar@example.com, baz@example.com', // list of receivers
+                to: user.email.toString(),
+                subject: streamName + " is now playing " + gameName + "!",
+                html: "\n      <h3>Greetings from WXSY!</h3>\n      <h4>" + streamName.toUpperCase() + " is playing " + gameName.toUpperCase() + "\n      <h6>You're recieving this notification because you subscribed to this specific streamer/game combo</h6>\n      <a href=https://www.twitch.tv/" + streamName + ">Click here to begin watching!<a>\n    "
+            };
+            // send mail with defined transpor
+            transporter.sendMail(mailOptions, function (err, info) {
+                if (err) {
+                    console.log('err', err);
+                }
+                else {
+                    console.log('info', info);
+                }
+            });
+            return [2 /*return*/];
         });
-        mailOptions = {
-            from: 'WXSY - no-reply',
-            // to: 'bar@example.com, baz@example.com', // list of receivers
-            to: user.email.toString(),
-            subject: 'A subscriber you follow just went live',
-            html: '<h1>Hello world?</h1>' // html body
-        };
-        // send mail with defined transpor
-        transporter.sendMail(mailOptions, function (err, info) {
-            if (err) {
-                console.log('err', err);
-            }
-            else {
-                console.log('info', info);
-            }
-        });
-        return [2 /*return*/];
-    });
-}); }); };
+    }); });
+};
 exports.default = emailUser;

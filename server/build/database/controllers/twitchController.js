@@ -71,7 +71,7 @@ router.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, 
             case 2:
                 usersToNotify = _b.sent();
                 // do work on each of those users.
-                return [4 /*yield*/, notifyUsers_1.default(usersToNotify)];
+                return [4 /*yield*/, notifyUsers_1.default(usersToNotify, activeSubscription)];
             case 3:
                 // do work on each of those users.
                 _b.sent();
