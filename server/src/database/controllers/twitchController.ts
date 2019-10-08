@@ -46,7 +46,7 @@ router.post('/', async (req, res:Response) => {
       { subscriptions: [activeSubscription._id] }
     );
     // do work on each of those users.
-    await notifyUsers(usersToNotify);
+    await notifyUsers(usersToNotify, activeSubscription);
     // todo: remove this temp res:
     res.send(`notified ${usersToNotify.length} users`)
     // send twitch info that it craves.
