@@ -33,6 +33,7 @@ router.post('/', async (req, res:Response) => {
     // if (!req.body.data.length) res.send({ message: 'no info from twitch' });
     const { user_id, game_id } = req.body;
     console.log('attempting to find subscriptino with userid and gameid,', user_id, game_id);
+    // get streamer name and game name from twitch?
     // find subscriptionsId in our DB that match user/game;
     const activeSubscription = await Subscription.findOne({
       streamerId: user_id,
