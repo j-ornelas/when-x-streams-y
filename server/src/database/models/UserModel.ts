@@ -1,5 +1,12 @@
 import { model, Schema, Model, Document } from 'mongoose';
 
+export interface UserInterface {
+  subscriptions:[String];
+  email: String;
+  password: String;
+  phone: String;
+};
+
 const UserSchema = new Schema({
   subscriptions: [String],
   email: String,
@@ -7,4 +14,4 @@ const UserSchema = new Schema({
   phone: String,
 });
 
-export const UserModel:Model<Document> = model('User', UserSchema);
+export const User:Model<Document> = model('User', UserSchema);

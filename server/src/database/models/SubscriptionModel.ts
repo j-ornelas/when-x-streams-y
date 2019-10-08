@@ -5,4 +5,4 @@ const SubscriptionSchema = new Schema({
   gameId: String,
 });
 
-export const SubscriptionModel:Model<Document> = model('Subscription', SubscriptionSchema);
+export const Subscription:Model<Document> = model('Subscription', SubscriptionSchema);
