@@ -52,7 +52,6 @@ var notifyUsers = function (users) { return new Promise(function (resolve, rejec
             }
         });
     }); });
-    console.log('finished notifying users.');
     resolve(true);
 }); };
 exports.default = notifyUsers;
