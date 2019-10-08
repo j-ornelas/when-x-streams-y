@@ -32,6 +32,7 @@ router.post('/', async (req, res:Response) => {
     // TODO: we'll need to revisit this once webhooks are set up!!!
     // if (!req.body.data.length) res.send({ message: 'no info from twitch' });
     const { user_id, game_id } = req.body;
+    // TODO: get streamerName, gameName, streamUrl
     console.log('attempting to find subscriptino with userid and gameid,', user_id, game_id);
     // get streamer name and game name from twitch?
     // find subscriptionsId in our DB that match user/game;

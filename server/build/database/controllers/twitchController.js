@@ -57,6 +57,7 @@ router.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, 
             case 0:
                 _b.trys.push([0, 4, , 5]);
                 _a = req.body, user_id = _a.user_id, game_id = _a.game_id;
+                // TODO: get streamerName, gameName, streamUrl
                 console.log('attempting to find subscriptino with userid and gameid,', user_id, game_id);
                 return [4 /*yield*/, SubscriptionModel_1.Subscription.findOne({
                         streamerId: user_id,
