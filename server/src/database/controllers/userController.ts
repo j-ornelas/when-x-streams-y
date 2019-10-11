@@ -11,6 +11,7 @@ router.use(bodyParser.urlencoded({
 
 const { TWITCH_CLIENT_ID } = process.env;
 
+// TODO: USE PAYLOAD TO SEND DATA
 router.get('/get', async (req:Request, res:Response) => {
   try {
     const users = await User.find();
@@ -92,9 +93,10 @@ interface CreateUserInterface extends Request {
   };
 }
 router.post('/create', async (req:CreateUserInterface, res:Response) => {
+  // TODO: do all sorts of validation here.
   try {
     const { email } = req.body;
-    const user = await User.create({ email });
+    const user = await User.create({ email }); // TODO: salt passwords.
     res.send({ user, success: true })
   } catch(err) {
     res.send({ message: `unable to update user. info: ${err.toString()}` });

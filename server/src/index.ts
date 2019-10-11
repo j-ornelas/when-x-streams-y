@@ -10,6 +10,6 @@ const app = express();
 /* ********** ROUTES *********** */
 app.use('/users', UserController);
 app.use('/twitch', TwitchController);
-app.get('/', (req, res) => res.send('wxsy coming soon'));
+app.get('/', (req, res) => res.send('wxsy coming soon')); //TODO: send react app.
 /* ******** SERVER INIT ******** */
 app.listen(PORT, () => console.log(`wxsy listening on port: ${PORT}!`));
