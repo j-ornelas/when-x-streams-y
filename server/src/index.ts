@@ -5,7 +5,6 @@ import express from 'express';
 import { UserController } from './database/controllers/userController';
 import { TwitchController } from './database/controllers/twitchController';
 import { LoginController } from './database/controllers/loginController';
-
 /* *********** CONFIG ********** */
 const { PORT } = process.env;
 const app = express();

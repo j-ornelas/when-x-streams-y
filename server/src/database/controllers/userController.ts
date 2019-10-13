@@ -76,27 +76,11 @@ router.post('/add-subscription', async (req:SubRequestInterface, res:Response) =
       subscriptionId = previousSubscription._id
     }
     if (!subscriptionId) return res.send({ message: 'something went wrong' });
+
     const user = await User.updateOne(
       { _id: userId },
       { $push: { subscriptions: subscriptionId }}
     );
-    res.send({ user, success: true })
-  } catch(err) {
-    res.send({ message: `unable to update user. info: ${err.toString()}` });
-  }
-});
-
-
-interface CreateUserInterface extends Request {
-  body: {
-    email: String;
-  };
-}
-router.post('/create', async (req:CreateUserInterface, res:Response) => {
-  // TODO: do all sorts of validation here.
-  try {
-    const { email } = req.body;
-    const user = await User.create({ email }); // TODO: salt passwords.
     res.send({ user, success: true })
   } catch(err) {
     res.send({ message: `unable to update user. info: ${err.toString()}` });
