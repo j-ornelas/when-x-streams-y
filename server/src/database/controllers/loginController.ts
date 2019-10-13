@@ -1,5 +1,5 @@
 import passport from 'passport';
-import { Strategy as twitchStrategy } from 'passport-twitch-new';
+import { Strategy as twitchStrategy } from 'passport-twitch-new'; // TODO: add typefile from passport-twitch, it should be identical
 import { Router, Request, Response } from 'express';
 import { User } from '../models/UserModel';
 import { validateAuth } from '../../middleware/validateAuth';
@@ -34,14 +34,11 @@ router.post('/local', validateAuth, async (req:LocalAuthReqInterface, res:Respon
 });
 /* *********** TWITCH LOGIN ********** */
 router.use(passport.initialize());
-passport.use(new twitchStrategy(twitchStrategyOptions, (accessToken:any, refreshToken:any, profile:any, done:any) => { // TODO: UPDATE THESE ANYS YO
-  console.log('twitch info', accessToken, refreshToken, profile);
-  // whatever we send here will be added to req in callback. aka user = req.user.
+passport.use(new twitchStrategy(twitchStrategyOptions, (accessToken:any, refreshToken:any, profile:any, done:any) => { // TODO: UPDATE THESE ANYS YO (see above)
   return done(null, profile);
 }))
 router.get('/twitch', passport.authenticate('twitch'));
 router.get('/twitch/callback', passport.authenticate('twitch', callbackOptions), (req:Request, res:Response) => {
-  // res.send({ success: true, user })
   // TODO: we should create a temporary (30 second token), redirect with it in the url, then use it to get info from the DB,
   // then load the app as normal with the data from the db, including a token of some sort.
   res.redirect(`/${req.user.id}`);

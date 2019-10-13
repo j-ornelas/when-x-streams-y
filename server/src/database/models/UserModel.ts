@@ -1,5 +1,11 @@
 import { model, Schema, Model, Document } from 'mongoose';
 
+const UserSchema = new Schema({
+  subscriptions: [String],
+  email: String,
+  password: String,
+  phone: String,
+});
 export interface UserInterface extends Document {
   subscriptions:[string];
   email: string;
@@ -8,14 +14,7 @@ export interface UserInterface extends Document {
 };
 export interface UserModelInterface extends Model<UserInterface> {
   findOrCreate(email:string):Promise<UserInterface>;
-}
-
-const UserSchema = new Schema({
-  subscriptions: [String],
-  email: String,
-  password: String,
-  phone: String,
-})
+};
 
 UserSchema.statics.findOrCreate = function(email:string) {
   const userModel:UserModelInterface = this;
@@ -29,9 +28,9 @@ UserSchema.statics.findOrCreate = function(email:string) {
       }
     } catch (err) {
       reject(err);
-    }
-  })
-}
+    };
+  });
+};
 
 
 export const User:UserModelInterface = model<UserInterface, UserModelInterface>('User', UserSchema);
