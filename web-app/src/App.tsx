@@ -5,7 +5,7 @@ import './App.css';
 
 const App: React.FC = () => {
   const [users, setUsers] = useState([]);
-  const [errorMsg, setErrorMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState(''); //TODO set this in app.jsx and use it globally
   const [isLoggedIn, setLogin] = useState(false);
   const handleRes = (({ success, users, message, token }:ServerResponseInterface) => { // TODO: refac this to its own helper.
     if (token) setLogin(success || false);
