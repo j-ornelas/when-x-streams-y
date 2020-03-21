@@ -21,6 +21,31 @@ router.get('/get', async (req:Request, res:Response) => {
   }
 });
 
+router.post('/create', async (req:Request, res:Response) => {
+  try {
+    const { email, password } = req.body;
+    const createAttemptData = await User.createUser({ email, password });
+    if (createAttemptData) res.send(createAttemptData);
+    if (!createAttemptData) throw new Error("Error creating user. Try again later.");
+  } catch(err) {
+    res.send({ error: err.toString() })
+  }
+})
+
+router.post('/login-local', async (req:Request, res:Response) => {
+  try {
+    const { email, password } = req.body;
+    const createAttemptData = await User.loginUserLocal({ email, password });
+    if (createAttemptData) {
+      res.send(createAttemptData);
+    } else {
+      throw new Error("Error creating user. Try again later.");
+    }
+  } catch(err) {
+    res.send({ error: err.toString() })
+  }
+})
+
 interface SubRequestInterface extends Request {
   body: {
     userId: String;
@@ -38,7 +63,7 @@ router.post('/add-subscription', async (req:SubRequestInterface, res:Response) =
       }
     })
     const streamerData = await twitchStreamerRequest.json();
-    if (!streamerData || !streamerData.data || !streamerData.data.length) return res.send({ message: `We couldn't find a streamer with the name ${streamName}` });
+    if (!streamerData || !streamerData.data || !streamerData.data.length) return res.send({ error: `We couldn't find a streamer with the name ${streamName}` });
     const streamerId = streamerData.data[0].id;
     // getGameId
     const twitchGameRequest = await fetch(`https://api.twitch.tv/helix/games?name=${gameName}`, {
@@ -47,7 +72,7 @@ router.post('/add-subscription', async (req:SubRequestInterface, res:Response) =
       }
     })
     const gameData = await twitchGameRequest.json();
-    if (!gameData || !gameData.data || !gameData.data.length) return res.send({ message: `We couldn't find a game with the name ${gameName}` });
+    if (!gameData || !gameData.data || !gameData.data.length) return res.send({ error: `We couldn't find a game with the name ${gameName}` });
     const gameId = gameData.data[0].id;
 
     let previousSubscription = await Subscription.findOne({
@@ -75,7 +100,7 @@ router.post('/add-subscription', async (req:SubRequestInterface, res:Response) =
       console.log('FOUND SUB IN DB');
       subscriptionId = previousSubscription._id
     }
-    if (!subscriptionId) return res.send({ message: 'something went wrong' });
+    if (!subscriptionId) return res.send({ error: 'something went wrong' });
 
     const user = await User.updateOne(
       { _id: userId },
@@ -83,7 +108,7 @@ router.post('/add-subscription', async (req:SubRequestInterface, res:Response) =
     );
     res.send({ user, success: true })
   } catch(err) {
-    res.send({ message: `unable to update user. info: ${err.toString()}` });
+    res.send({ error: `unable to update user. info: ${err.toString()}` });
   }
 });
 

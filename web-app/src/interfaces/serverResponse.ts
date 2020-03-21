@@ -1,6 +1,8 @@
+import { UserInterface } from '../../../server/src/database/models/UserModel';
+
 export interface ServerResponseInterface {
-  success:boolean;
+  success:boolean|undefined;
   users:[];
-  message:string;
-  token:string|undefined;
+  user:UserInterface;
+  error:string|undefined;
 }

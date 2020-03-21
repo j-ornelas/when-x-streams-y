@@ -40,6 +40,7 @@ router.post('/', async (req, res:Response) => {
       streamerId: user_id,
       gameId: game_id,
     });
+    console.log('active subscription', activeSubscription)
     if (!activeSubscription) return res.send({ message: 'No users subscribed to this streamer/game'});
     // find users that have that subscriptionId.
     const usersToNotify = await User.find(
